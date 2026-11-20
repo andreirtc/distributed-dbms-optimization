@@ -1,10 +1,14 @@
-# Distributed Grocery DBMS Project
+# Distributed Coffee Shop DBMS Project
 
-University Database Management Systems project: a **locally hosted** grocery e-commerce application based on PostgreSQL, using the Instacart Market Basket Analysis dataset and documented synthetic extensions. We will measure real bottlenecks, optimize SQL, and later demonstrate local-network logical replication and read load balancing.
+University Database Management Systems project: a **locally hosted** coffee shop and bakehouse application based on PostgreSQL, using reproducible, clearly labeled synthetic customer and transaction data. We will measure real bottlenecks, optimize SQL, and later demonstrate local-network logical replication and read load balancing.
 
-**Repository visibility: Public.** Anyone can read the source; only authorized collaborators should edit it. Never upload secrets, private records, Kaggle CSV archives, or large database dumps.
+**Repository visibility: Public.** Anyone can read the source; only authorized collaborators should edit it. Never upload secrets, private records, large generated data archives, or large database dumps.
 
-**Current stage: Gate 0 — repository and tools only.** No PostgreSQL service, dataset import, distributed node, or benchmark result is claimed operational.
+**Documented stage:** Repository/tool preparation and storefront ideation. Actual member setup progress has not been verified. No PostgreSQL service, bulk data load, distributed node, or benchmark result is claimed operational.
+
+## Current direction update — 20 November 2026
+
+The coffee-shop domain supersedes previous grocery requirements. Branding is not approved yet. Ralph is responsible for the storefront and will hand it off to Menard. Read [the website design brief](WEBSITE_DESIGN_BRIEF.md) for the mandatory visual approval process. The database team can prepare domain requirements in parallel.
 
 ## Start here
 
@@ -19,21 +23,21 @@ University Database Management Systems project: a **locally hosted** grocery e-c
 | Laptop | Owner | Target role |
 | --- | --- | --- |
 | Windows 1 (Menard) | Menard | FastAPI integration and storefront hosting |
-| Windows 2 (JC) | JC | Query performance, monitoring dashboard; project leadership and storefront development |
+| Windows 2 (JC) | JC | Query performance, optimization and monitoring dashboard |
 | Windows 3 (Michell) | Michell | Primary PostgreSQL instance; deploy reviewed migrations |
 | Windows 4 (Rei) | Rei | Replica B; backup and recovery |
 | MacBook M2 (Diane) | Diane | Replica A; HAProxy and local networking |
-| Chromebook (Ralph) | Ralph | Data importer/generator scripts and Locust load tests |
+| Chromebook (Ralph) | Ralph | Storefront development, synthetic data generator and Locust load tests |
 
-The project lead owns UI selection, architecture approvals, and the shared ERD/API contract. Michell runs the primary server but **does not unilaterally define** the database schema.
+Ralph owns storefront design and development; the group project lead coordinates shared ERD/API and architecture approvals. Confirm formal leadership/repository ownership with the team. Michell runs the primary server but **does not unilaterally define** the database schema.
 
 ## Planned project directories (created as work begins)
 
-- `frontend/` — customer storefront, owned by project lead and deployed by Menard
+- `frontend/` — customer storefront, owned by Ralph and deployed by Menard
 - `backend/` — FastAPI, owned by Menard
 - `monitoring/` — dashboard and measurement pipeline, owned by JC
 - `schema/` — reviewed SQLAlchemy models / Alembic migrations, deployed by Michell
-- `scripts/data/` — CSV importer and synthetic generator, owned by Ralph
+- `scripts/data/` — synthetic data generator and bulk loader, owned by Ralph
 - `benchmarks/sql/` — SQL measurement scripts, JC
 - `benchmarks/locust/` — HTTP load testing, Ralph
 - `infra/replication/` — replication configuration, Rei + Diane
@@ -44,15 +48,15 @@ The project lead owns UI selection, architecture approvals, and the shared ERD/A
 ## Project gates
 
 - **Gate 0:** Share repository, verify software versions, agree workflow.
-- **Gate 1:** Draft and review ERD, CSV mapping, API contract, migrations; approve **before** writing dependent features.
+- **Gate 1:** Draft and review ERD, synthetic-data mapping, API contract, migrations; approve **before** writing dependent features.
 - **Gate 2:** One local PostgreSQL database, working FastAPI and sample storefront.
-- **Gate 3:** Real bulk data, repeatable baseline and optimized SQL measurements.
+- **Gate 3:** Bulk synthetic data, repeatable baseline and optimized SQL measurements.
 - **Gate 4:** Offline LAN, primary + logical replicas, HAProxy, distributed read tests.
 - **Gate 5:** Rehearsal, transaction/concurrency and recovery demonstrations, evidence and Q&A.
 
 ## Data and secret handling
 
-Do not commit downloaded Kaggle CSV files, PostgreSQL database directories, dumps, bulk outputs, `.env` files, database passwords, or API tokens. Commit only small non-sensitive fixtures, scripts, migration files, and an `.env.example` with placeholder values. **GitHub hosts source code, not the deployed database.**
+Do not commit bulk generated data files, PostgreSQL database directories, dumps, bulk outputs, `.env` files, database passwords, or API tokens. Commit only small non-sensitive fixtures, scripts, migration files, and an `.env.example` with placeholder values. **GitHub hosts source code, not the deployed database.**
 
 ## Everyday Git routine
 

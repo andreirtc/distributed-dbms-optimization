@@ -1,23 +1,25 @@
 # DBMS Project — Six-Member Setup, Assignments, and AI-Agent Guide
 
-**Project:** Distributed Grocery E-Commerce Database System with Performance Optimization and Load Balancing  
+**Project:** Distributed Coffee Shop and Bakehouse Database System with Performance Optimization and Load Balancing  
 **Status:** Planning / setup; no services claimed working yet  
 **Objective:** Demonstrate a functional **locally hosted PostgreSQL database** containing large amounts of data, show real bottlenecks, apply DBMS techniques, and present reproducible before/after evidence. **The professor prohibits cloud-hosted databases, not GitHub or AI-assisted coding.**
 
-> **Start here:** The project lead coordinates architecture, personally chooses/builds the **customer storefront**, and approves shared contracts. The six members use AI agents to help implement and *learn* their tasks. **No router test, full dataset, or six-node deployment is required to start coding.**
+> **Start here:** The project lead coordinates architecture and shared contract approval; Ralph designs and builds the **customer storefront**. The six members use AI agents to help implement and *learn* their tasks. **No router test, full dataset, or six-node deployment is required to start coding.**
+
+**Domain update (20 November 2026):** Coffee shop and bakehouse replaces grocery. Read `WEBSITE_DESIGN_BRIEF.md` for Ralph’s creative approval workflow. Do not implement grocery-specific features or use old Instacart mappings.
 
 ## 1. Laptop assignments — names to use consistently
 
 | Laptop | Project role | Responsibility during the demo |
 |---|---|---|
-| **Windows 1 (Menard)** | **Backend & Application Integration / Hosting** | Run the FastAPI backend and serve the storefront the project lead developed; show login, browsing and checkout transactions |
+| **Windows 1 (Menard)** | **Backend & Application Integration / Hosting** | Run the FastAPI backend and serve the storefront Ralph develops; show login, browsing and checkout transactions |
 | **Windows 2 (JC)** | **Performance & Monitoring** | Run the dashboard and demonstrate real SQL benchmark plans, before/after results, metrics |
 | **Windows 3 (Michell)** | **Primary PostgreSQL Administrator & Schema Deployment** | Run the authoritative primary PostgreSQL database; deploy **reviewed** migrations, data integrity checks and indexes |
 | **Windows 4 (Rei)** | **Replica B & Backup/Recovery** | Run Replica B; demonstrate replication status and recovery of a small test backup |
 | **MacBook M2 (Diane)** | **Replica A, Networking & HAProxy** | Run Replica A and HAProxy; show read/write endpoints, read-connection distribution and LAN setup |
-| **Chromebook (Ralph)** | **Dataset Engineering & Load Testing** | Prepare importer/generator scripts; drive Locust traffic and export test statistics |
+| **Chromebook (Ralph)** | **Storefront Development, Dataset Engineering & Load Testing** | Develop the storefront; prepare generator/loader scripts; drive Locust traffic and export test statistics |
 
-**Project lead (you; additional duty within the six, not a seventh role):** Choose/adapt the storefront UI, lead Git and architecture reviews, approve shared ERD and API contracts, review pull requests, prepare the professor's early review, coordinate demonstration and hand off frontend deployment to **Windows 1 (Menard)**. **Michell is not solely responsible for database design decisions**; all six review the schema and the lead approves changes. Menard is not asked to independently recreate a second storefront.
+**Coordination:** Ralph develops the customer storefront and hands it off to Windows 1 (Menard). The group lead coordinates Git, architecture reviews, early professor review and demo, and approves shared ERD/API decisions after team review. Confirm formal lead and repository ownership with the group. Michell administers the primary but does not unilaterally define the schema. Menard does not build a competing storefront.
 
 **Storage reminder:** Windows 1 (Menard) has **300 GB free on the secondary HDD**; all storage values supplied previously referred to **free space**. Large CSVs or backup archives can be staged there if necessary, though SSD is preferable for the primary database. Avoid storing huge data on Windows 2 (JC) or Chromebook (Ralph).
 
@@ -59,9 +61,9 @@
 | Gate | Work | Completion evidence | Who drives it |
 |---|---|---|---|
 | **0 — Tools** | Check existing Python/Git/Node/PostgreSQL, install only missing tools; create Git repo | Version screenshots/logs; everyone can clone repo | Project lead + all |
-| **1 — Contracts** | ERD (tables/relationships), normalization, Instacart CSV mapping, API contract, migration plan | Reviewed Mermaid ERD, `schema/` migration, sample SQL tests, agreed API endpoints | Lead approves; Michell implements; Ralph/Menard/JC review |
-| **2 — Working base** | Backend + storefront using one local PostgreSQL and small sample data | Products appear in browser from PostgreSQL; sample checkout transaction works | Lead (UI), Menard (API/hosting), Michell (DB), Ralph (sample data) |
-| **3 — Early review candidate** | Bulk import, measured slow-query baseline, indexing and query optimization | Millions of rows or documented achievable subset; saved `EXPLAIN` plans; repeatable actual timings | Ralph, JC, Michell |
+| **1 — Contracts** | ERD (tables/relationships), normalization, synthetic-data mapping, API contract, migration plan | Reviewed Mermaid ERD, `schema/` migration, sample SQL tests, agreed API endpoints | Project lead approves after shared review; Michell implements; Ralph/Menard/JC review |
+| **2 — Working base** | Backend + storefront using one local PostgreSQL and small sample data | Products appear in browser from PostgreSQL; sample checkout transaction works | Ralph (UI), Menard (API/hosting), Michell (DB), Ralph (sample data) |
+| **3 — Early review candidate** | Bulk generation/loading, measured slow-query baseline, indexing and query optimization | Millions of rows or documented achievable subset; saved `EXPLAIN` plans; repeatable actual timings | Ralph, JC, Michell |
 | **4 — Distributed setup** | Check offline router LAN, configure replicas, HAProxy read/write endpoints | Replicated changes verified and actual read connections observed on **both** replicas | Diane + Rei + Michell + Menard |
 | **5 — Demo-ready** | Concurrency, backup/recovery, monitoring, load tests and Q&A | Offline rehearsal; scripted startup/shutdown; evidence bundle; six members explain work | All six; lead coordinates |
 
@@ -97,10 +99,10 @@
 |---|---|---|
 | **Windows 1 (Menard)** | Git; VS Code or Orca/agent; Python >=3.11; Node.js 24.x LTS; virtual environment | local/remote PostgreSQL connection, app hosting setup |
 | **Windows 2 (JC)** | Git; VS Code or Orca/agent; Python >=3.11; DBeaver Community; Node only if building the React monitoring UI | DB read-only monitoring credentials, metrics connection |
-| **Windows 3 (Michell)** | Git; VS Code/agent; PostgreSQL 18.x server + CLI/pgAdmin; Python >=3.11 if running migrations/scripts | replication publication, secure LAN access, full CSV imports |
+| **Windows 3 (Michell)** | Git; VS Code/agent; PostgreSQL 18.x server + CLI/pgAdmin; Python >=3.11 if running migrations/scripts | replication publication, secure LAN access, bulk synthetic-data loading |
 | **Windows 4 (Rei)** | Git; PostgreSQL 18.x server + CLI; VS Code/agent | subscriber configuration, scheduled backups |
 | **MacBook M2 (Diane)** | Git, Homebrew, VS Code/agent; PostgreSQL 18.x | HAProxy, logical subscription, LAN rules |
-| **Chromebook (Ralph)** | Git; Python >=3.11 (in Linux), `python3-venv`, agent/VS Code if feasible; Locust in virtual environment | final Locust scripts; **do not store full Kaggle dataset locally** |
+| **Chromebook (Ralph)** | Git; Python >=3.11 (in Linux), `python3-venv`, agent/VS Code if feasible; Node.js 24.x LTS for frontend development; Locust in virtual environment | final Locust scripts; **do not store full generated dataset locally** |
 
 > Installation is a human-reviewed task. If something is already installed and compatible, record its current version and **skip reinstalling**.
 
@@ -140,7 +142,7 @@ SELECT version();
 ```
 3. On **Windows 3 (Michell)** only, after the schema plan is approved, create a local dev database (example):
 ```sql
-CREATE DATABASE grocery_db;
+CREATE DATABASE coffee_db;
 ```
 Do not change `listen_addresses`, open firewalls, or create subscriptions yet.
 
@@ -190,13 +192,13 @@ Open `http://127.0.0.1:8000/health` — should return `{"status":"ok"}`. This ch
 
 ## 5. How to set up GitHub collaboration (the project lead does this first)
 
-1. Create a **private GitHub repository**, e.g. `distributed-grocery-dbms`, and invite all six GitHub accounts as collaborators. Code may be hosted on GitHub; PostgreSQL data remains on laptops.
+1. Use the existing **public GitHub repository** `distributed-dbms-optimization`; invite the other five members as collaborators if not already invited. Code may be hosted on GitHub; PostgreSQL data remains on laptops.
 2. Put **`AGENTS.md`** (the accompanying file), this guide, and a minimal `README.md` at repository root. The guide can later be moved under `site-docs/`.
-3. Add `.gitignore` entries for `.env`, `.venv/`, `__pycache__/`, `node_modules/`, `.pytest_cache/`, `data/raw/`, `data/exports/`, `*.csv` for bulk data (allow tiny documented fixtures explicitly), `*.backup`, `*.dump`, `pgdata/`, and benchmark output files too large to review. Never commit credentials or full Kaggle CSV files.
+3. Add `.gitignore` entries for `.env`, `.venv/`, `__pycache__/`, `node_modules/`, `.pytest_cache/`, `data/raw/`, `data/exports/`, `*.csv` for bulk data (allow tiny documented fixtures explicitly), `*.backup`, `*.dump`, `pgdata/`, and benchmark output files too large to review. Never commit credentials or bulk generated datasets.
 4. Each member clones the repo using their own GitHub access:
 ```bash
 git clone <REPOSITORY_URL>
-cd distributed-grocery-dbms
+cd distributed-dbms-optimization
 git checkout -b feat/<owner>-<feature>
 # Edit files; run local tests
 git add <specific-files>
@@ -211,11 +213,11 @@ git push -u origin feat/<owner>-<feature>
 
 ### Folder ownership (to reduce AI merge conflicts)
 ```text
-frontend/               project lead builds customer storefront; Menard deploys/integrates
+frontend/               Ralph builds customer storefront; Menard deploys/integrates
 backend/                Windows 1 (Menard)
 monitoring/              Windows 2 (JC)
 schema/                  Windows 3 (Michell) applies reviewed database decisions
-scripts/data/            Chromebook (Ralph) creates importer/generator scripts
+scripts/data/            Chromebook (Ralph) creates generator/bulk-loader scripts
 benchmarks/sql/          Windows 2 (JC)
 benchmarks/locust/       Chromebook (Ralph)
 infra/replication/       Windows 4 (Rei) + MacBook M2 (Diane), coordinated
@@ -227,22 +229,22 @@ AGENTS.md                shared rules; changes require lead review
 
 ## 6. What is being built? (not just dashboard appearance)
 
-**Customer storefront** (project lead develops, Menard hosts/integrates): real product browsing, search and filters, demo login, cart, order history, simulated checkout. UI template may be selected later; agent should keep styling replaceable. No real payment processing.
+**Customer storefront** (Ralph develops, Menard hosts/integrates): branded landing page, frameless product shelves, recipe-specific drink visuals, interactive 3D drink studio, search/filter, cart, accounts, branch selection, pickup, simulated checkout, history, favorites and rewards. Brand name, palette, business positioning, physical beverage details and pastry 3D method remain undecided. Follow `WEBSITE_DESIGN_BRIEF.md` and get visual approval before production implementation. No real payment processing.
 
 **Admin/DBMS dashboard** (Windows 2 (JC)): report **measured** records, query plans/times, CPU/RAM where available, node health, replication lag, Locust request metrics, read distribution, and clearly separated baseline vs optimized benchmark results. **It is not only a pretty UI**; JC must create/reuse scripts that gather these metrics.
 
-**Original CSV dataset** (Chromebook (Ralph) designs importer; run full imports on Windows 3 (Michell) or storage-rich staging): [Instacart Market Basket Analysis](https://www.kaggle.com/competitions/instacart-market-basket-analysis/data). Files typically include `orders.csv`, `products.csv`, `aisles.csv`, `departments.csv`, `order_products__prior.csv`, and `order_products__train.csv`. Historical data are anonymized and not a full ready-to-run shop. Add **synthetic** demo credentials, prices, inventory, carts, and new checkout records, with provenance labeling. Follow competition/data reuse rules. Initial small sample → 100K → 1M → higher volumes only after storage/benchmark review.
+**Synthetic coffee-shop dataset** (Ralph designs generator and bulk loader; run large generation/loading on Windows 3 (Michell) or approved storage-rich staging): use deterministic seeds and realistic branch/customer/product/order distributions. Start with a tiny fixture, then 100K, 1M and larger volumes only after measuring storage, WAL and performance. A provisional 100–150 menu items is enough; expand historical orders, order items, customizations, branch inventory movements, payments and loyalty transactions instead of inventing millions of products. Validate PK/FK integrity, allowed customization options, prices/quantity totals, timestamps and reproducibility. The schema and row counts are proposals until approved. No external dataset is required.
 
 **ERD** = diagram of tables and their PK/FK relationships. **Normalization** (usually targeting 3NF for operational tables) is part of schema design. **Migration** = a version-controlled schema change (`CREATE TABLE`, `ALTER TABLE`, etc.), normally run with Alembic. **Benchmark query** = *actual SQL executed* while measuring plan, runtime and resource use—not a decorative dashboard card.
 
-**Sample benchmark scenario:** Query historical orders for a selected customer and `ORDER BY` order number with a `LIMIT`; measure `EXPLAIN (ANALYZE, BUFFERS)` before and after a properly chosen composite index. Repeat trials on the same node/data set, record cold/warm-cache issues. The real table/column names must come from the approved schema. Also test a large join/aggregation, and simultaneous read traffic with Locust. Do not fake slowdowns with `sleep()`.
+**Sample benchmark scenario:** Query historical coffee-shop orders for a selected customer and `ORDER BY` order timestamp with a `LIMIT`; measure `EXPLAIN (ANALYZE, BUFFERS)` before and after a properly chosen composite index. Repeat trials on the same node/data set, record cold/warm-cache issues. The real table/column names must come from the approved schema. Also test a large join/aggregation, and simultaneous read traffic with Locust. Do not fake slowdowns with `sleep()`.
 
 ## 7. Agent instructions: how every member starts and follows up
 
 **A. One-time setup for all agents:** clone/open the repo, then paste the following text into Codex, Claude Code or other chosen agent; if using Orca, open the same repo/worktree with the agent. Also keep `AGENTS.md` at repository root.
 
 ```text
-We are a six-student team building a locally hosted Distributed Grocery DBMS project.
+We are a six-student team building a locally hosted Distributed Coffee Shop DBMS project.
 Read AGENTS.md and this project's README/setup guide first. Follow the
 approved architecture, DB schema, API contract, member boundaries, milestone
 gates, local-only database rule, and review process. I am [YOUR NAME] on
@@ -264,12 +266,12 @@ what I must run manually, and draft a PR summary and verification report.
 
 ### Ready-to-paste first tasks for each member
 
-#### Project lead (you) — build storefront, own architectural approvals
+#### Project lead — coordinate architecture and review
 ```text
 Read AGENTS.md. I'm the project lead. Propose and set up the shared repo,
-ERD/API-contract review workflow and acceptance tests. I'm personally
-building/adapting the grocery customer storefront (React) from a legal
-editable template I will choose. Keep frontend components modular and
+ERD/API-contract review workflow and acceptance tests. Ralph is building the original coffee-shop storefront.
+Read WEBSITE_DESIGN_BRIEF.md and coordinate Ralph's visual approvals with
+the group's data and API contracts. Keep frontend components modular and
 API-driven; use temporary mock data only while FastAPI endpoints are
 unavailable, label it mock, and replace it when contracts are approved.
 Do not create a second competing backend or change the approved schema.
@@ -280,14 +282,14 @@ commands, frontend environment variables and build assets for an offline LAN.
 #### Windows 1 (Menard) — backend and storefront handoff
 ```text
 Read AGENTS.md and approved ERD/API contracts. I am Menard on Windows 1
-(Menard). I do NOT need to design a separate storefront: the project lead
+(Menard). I do NOT need to design a separate storefront: Ralph
 will hand off the React frontend from GitHub. For Gate 0, inventory Python,
 Git and Node versions; prepare a .venv and a FastAPI /health smoke test.
 After Gate 1, implement tested PostgreSQL-backed product listing/search,
 demo auth, cart, order history and transactional checkout endpoints matching
 the shared API contract. Initially read/write on one local PostgreSQL server;
 prepare separate configurable endpoints for later. Later integrate and host
-the project lead's storefront on this laptop. Give exact PowerShell commands,
+Ralph's storefront on this laptop. Give exact PowerShell commands,
 manual tests and a Browser→FastAPI→PostgreSQL explanation.
 ```
 
@@ -309,9 +311,9 @@ throughput. Include tests and Windows setup commands.
 Read AGENTS.md. I am Michell on Windows 3 (Michell). I administer the primary
 PostgreSQL server and implement the SCHEMA ONLY AFTER group/lead review.
 For Gate 0, install/verify PostgreSQL 18.x and Git; create a local test DB.
-For Gate 1, propose Instacart CSV mapping, ERD, constraints and normal forms
+For Gate 1, propose synthetic-data mapping, ERD, constraints and normal forms
 for shared review; implement approved SQLAlchemy models/Alembic migrations
-and validate with sample inserts and FK tests. Coordinate import and indexes
+and validate with sample inserts and FK tests. Coordinate data loading and indexes
 with Ralph and JC. Do not act as the only architecture decision-maker or
 prematurely enable LAN/replication. Provide exact PowerShell commands,
 version checks, backups before destructive changes and verification results.
@@ -341,13 +343,15 @@ firewall and LAN prerequisites. Never claim HAProxy routes SQL statements by
 itself. Provide macOS commands and real verification steps.
 ```
 
-#### Chromebook (Ralph) — importer and load tests
+#### Chromebook (Ralph) — storefront, synthetic data and load tests
 ```text
 Read AGENTS.md. I am Ralph on Chromebook (Ralph). For Gate 0, verify Linux
 Python (do not replace system Python), create a .venv, install and verify
-Locust. My Linux free space is limited: do not put the complete Instacart CSVs
-or database here. Design restartable CSV import scripts and a clearly labeled
-synthetic generator to RUN on Windows 3 (Michell) or an approved staging disk.
+Locust and Node.js if needed for frontend work. Read WEBSITE_DESIGN_BRIEF.md.
+For storefront work, start in visual exploration only; wait for explicit approval
+at each creative gate. My Linux storage is limited: do not put the bulk dataset
+or database here. Design a restartable, seeded synthetic generator and bulk
+loader to RUN on Windows 3 (Michell) or an approved staging disk.
 Start with a tiny fixture; validate foreign keys, row counts and provenance.
 After backend endpoints work, create Locust scripts simulating genuine
 product browse/search/cart actions, with configurable users, spawn rate,
@@ -361,7 +365,7 @@ run duration and CSV export. Explain throughput, p95 latency and errors.
 **At integration:** verify the router (no fiber/WAN, 5 GHz and DHCP if standalone, no client isolation), identify LAN IPs, ping/TCP test and optionally `iperf3`. Have **Windows 3 (Michell)** start primary DB; **Windows 4 (Rei)** and **MacBook M2 (Diane)** start subscribers; **MacBook M2 (Diane)** verify HAProxy; **Windows 1 (Menard)** start API/frontend; **Windows 2 (JC)** start real monitoring; **Chromebook (Ralph)** run Locust. Confirm all services before large tests.
 
 **Suggested demonstration:**
-1. Project lead opens the polished storefront and briefly explains architecture.
+1. Ralph opens the polished storefront and briefly explains architecture.
 2. **Windows 1 (Menard):** product search, login, cart, simulated checkout through API.
 3. **Windows 3 (Michell):** actual tables, PK/FK relationships, row counts, primary status.
 4. **Windows 2 (JC):** query before/after index and actual execution plans.
@@ -374,13 +378,13 @@ run duration and CSV export. Explain throughput, p95 latency and errors.
 
 ## 9. Minimum first-day checklist and what to report
 
-- [ ] **Project lead:** Create private GitHub repo; upload this guide + `AGENTS.md`; choose agent; create initial issues and approve the first task boundaries.
+- [ ] **Project lead:** Verify the existing public repo; update this guide and `AGENTS.md` through a reviewed PR; update domain-specific issues and approve task boundaries.
 - [ ] **Windows 1 (Menard):** Verify Git/Python/Node and make FastAPI `/health` return JSON.
 - [ ] **Windows 2 (JC):** Verify Git/Python/DBeaver and draft 3 SQL benchmark scenarios (not dashboard screenshots).
 - [ ] **Windows 3 (Michell):** Install/verify PostgreSQL 18.x and create small test DB; draft schema for *group* review.
 - [ ] **Windows 4 (Rei):** Install/verify PostgreSQL 18.x, make a tiny backup and restore.
 - [ ] **MacBook M2 (Diane):** Verify Homebrew/Git/PostgreSQL 18.x; prepare HAProxy prerequisites **only**.
-- [ ] **Chromebook (Ralph):** Verify Python >=3.11 + Git + Locust in Linux .venv; prepare first tiny data import fixture.
+- [ ] **Chromebook (Ralph):** Verify Python >=3.11 + Git + Locust in Linux .venv; prepare first tiny synthetic data fixture.
 - [ ] **Group:** Agree that all schema and API changes require a PR and lead approval before integration.
 
 **Group chat report format:**
@@ -404,7 +408,6 @@ PR or commit link:
 - [DBeaver](https://dbeaver.io/download/) · [Locust install](https://docs.locust.io/en/stable/installation.html) · [Locust quickstart](https://docs.locust.io/en/stable/quickstart.html)
 - [Homebrew](https://brew.sh/) · [HAProxy](https://www.haproxy.org/) · [HAProxy Homebrew](https://formulae.brew.sh/formula/haproxy)
 - [Orca app (formerly onOrca)](https://orca.dev/) · [Orca source/install details](https://github.com/stablyai/orca)
-- [Instacart Market Basket Analysis dataset](https://www.kaggle.com/competitions/instacart-market-basket-analysis/data)
 
 ---
-**Document purpose:** This is a *working team playbook*, not evidence that systems are already installed or configured. Adjust role ownership only through team agreement; keep device names exactly as shown. The project lead can replace UI templates later without changing approved DB schema/API contracts.
+**Document purpose:** This is a *working team playbook*, not evidence that systems are already installed or configured. Adjust role ownership only through team agreement; keep device names exactly as shown. Ralph may refine UI within the approved design without changing shared DB schema/API contracts.

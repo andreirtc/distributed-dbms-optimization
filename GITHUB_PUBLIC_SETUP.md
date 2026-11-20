@@ -4,34 +4,39 @@
 **Visibility:** Public  
 **Target:** Six students collaborating on a locally hosted PostgreSQL/DBMS project. GitHub is for source code and documents, **not the deployed database**.
 
+## Existing repository update
+
+If the public repository already exists, keep it. Pull the latest `main`, create a documentation-update branch, replace the four root Markdown files and add `WEBSITE_DESIGN_BRIEF.md`. Review, commit, push, and open a PR. Keep existing `.gitignore`, code, issues and history. Revise grocery-specific issue descriptions after the PR merges. The initial setup below is retained for members who still need it.
+
 ## Before inviting your group
 
 1. Open <https://github.com/new> and create a **Public** repository in your personal account named `distributed-dbms-optimization`. Fill in the description: `A distributed DBMS project demonstrating PostgreSQL replication, load balancing, indexing, and performance optimization across six local laptops.`
-2. Leave GitHub's automatic README, `.gitignore` and license selections **off**, because this package includes your own files.
-3. Extract this ZIP locally. On the empty GitHub repository, click **uploading an existing file** or **Add file → Upload files** and select these **five extracted files**. Do not upload the ZIP itself:
+2. Leave GitHub's automatic README, `.gitignore` and license selections **off**, because the repository starter includes your own files. The documentation-update ZIP does not include `.gitignore`; retain the existing one or create it using the group guide if starting from scratch.
+3. Extract the repository files locally. On the empty GitHub repository, click **uploading an existing file** or **Add file → Upload files** and select these **six project files**. Do not upload the ZIP itself:
    - `README.md`
    - `AGENTS.md`
    - `DBMS_PROJECT_SETUP_AND_ASSIGNMENTS.md`
    - `GITHUB_PUBLIC_SETUP.md`
-   - `.gitignore` (a hidden file; ensure it was included)
+   - `WEBSITE_DESIGN_BRIEF.md`
+   - `.gitignore` (retain or create separately if missing; this update ZIP does not contain it)
 4. Review the upload list carefully. Commit directly to `main` **for the initial upload only**, with the message `docs: initialize public DBMS project`.
-5. On your repository home page, verify all five files appear in the root. Inspect README and AGENTS.md by clicking them.
+5. On your repository home page, verify all six files appear in the root. Inspect README and AGENTS.md by clicking them.
 6. Go to **Settings → General**. If needed, enable **Issues** under Features. Under **Pull Requests**, consider enabling squash merge and automatic deletion of head branches (available settings may vary).
 7. **Protect main before inviting anyone**: open **Settings → Rules → Rulesets → New ruleset → New branch ruleset**. Name it `protect-main`; set enforcement to **Active**; target the default branch (`main`). Select **Require a pull request before merging** with **one approval** (if the group wants enforced peer review); select **Block force pushes** and **Restrict deletions**. Save. These rulesets are available for public repositories on GitHub Free. Ruleset UI labels may vary.
-8. Make sure no sensitive data, personal IDs, real passwords, API keys, `.env` files, downloaded Instacart CSVs, or database dumps are in the repository. `.gitignore` helps with Git CLI but does **not** sanitize files deliberately uploaded in the GitHub browser.
+8. Make sure no sensitive data, personal IDs, real passwords, API keys, `.env` files, bulk generated data files, or database dumps are in the repository. `.gitignore` helps with Git CLI but does **not** sanitize files deliberately uploaded in the GitHub browser.
 
 ## Invite the five other members
 
 1. Open the repo **Settings → Collaborators → Add people** (in the Access section). Invite by **GitHub username**, not just a display name.
-2. Invite Menard, Michell, Rei, Diane and Ralph if **JC is the account owner**. If a different member owns the account, invite whichever five members are not the owner. Have each member accept the invitation.
+2. Invite whichever five members are not the actual repository owner. Do not assume ownership from laptop assignments. Have each member accept the invitation.
 3. Everyone can see a public repository, but the invitation is needed for write/collaboration access.
-4. Create six GitHub Issues assigning one owner per task:
-   - **Lead / JC:** Architecture decisions, storefront/template selection, shared ERD/API review, pull-request review, monitoring plan.
+4. Create or update six GitHub Issues assigning one owner per task (assignees can be added later):
+   - **JC:** SQL benchmark design, optimization, monitoring dashboard, shared ERD/API review.
    - **Menard — Windows 1 (Menard):** FastAPI `/health` prototype, API configuration, application deployment plan.
    - **Michell — Windows 3 (Michell):** ERD and SQL migration proposal, PostgreSQL 18 local setup (do not change shared schema without approval).
    - **Rei — Windows 4 (Rei):** PostgreSQL 18 backup/restore small-database exercise, future replica plan.
    - **Diane — MacBook M2 (Diane):** PostgreSQL macOS setup, HAProxy plan, network topology checklist.
-   - **Ralph — Chromebook (Ralph):** Instacart data dictionary review, sample importer proposal, Locust basic test.
+   - **Ralph — Chromebook (Ralph):** Coffee-shop data generator proposal, small seed fixture, storefront prototyping, Locust basic test.
 
 ## What to send in the group chat
 
@@ -76,7 +81,7 @@ git push -u origin feat/yourname-task
 
 ## After this setup: first technical milestone
 
-Review one ERD/schema, Instacart CSV-to-table mapping, API contract, and migration design **together**. Only after approval should different agents build dependent backend, importer and benchmarking modules. Router testing and replication are **not prerequisites** to starting this milestone.
+Review one ERD/schema, synthetic-data generation plan, API contract, and migration design **together**. Only after approval should different agents build dependent backend, data-generation and benchmarking modules. Router testing and replication are **not prerequisites** to starting this milestone.
 
 ## If you already have a private repository
 
